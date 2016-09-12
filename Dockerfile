@@ -1,4 +1,4 @@
-FROM starlabio/centos-base:1.1
+FROM starlabio/centos-base:1.2
 MAINTAINER Doug Goldstein <doug@starlab.io>
 
 # setup linkers for Cargo
