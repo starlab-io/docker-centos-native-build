@@ -14,3 +14,6 @@ RUN rustup default 1.12.1-x86_64-unknown-linux-gnu
 
 # Install rustfmt / cargo fmt for testing
 RUN cargo install --root /usr/local rustfmt --vers 0.5.0
+
+# Install xxd utility
+RUN yum install -y vim-common
