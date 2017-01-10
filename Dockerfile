@@ -15,8 +15,13 @@ RUN rustup default 1.12.1-x86_64-unknown-linux-gnu
 # Install rustfmt / cargo fmt for testing
 RUN cargo install --root /usr/local rustfmt --vers 0.5.0
 
+# Install yum-plugin-ovl to work around issue with a bad
+# rpmdb checksum
+RUN yum install -y yum-plugin-ovl && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 # Install xxd and attr utilities
-RUN yum update -y && \
-    yum install -y vim-common attr && \
+RUN yum install -y vim-common attr && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
