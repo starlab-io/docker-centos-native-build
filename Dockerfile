@@ -17,3 +17,6 @@ RUN cargo install --root /usr/local rustfmt --vers 0.5.0
 
 # Install xxd utility
 RUN yum install -y vim-common
+
+# Install attr utilities
+RUN yum install -y attr
