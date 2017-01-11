@@ -25,3 +25,11 @@ RUN yum install -y yum-plugin-ovl && \
 RUN yum install -y vim-common attr && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Install libffi
+RUN yum install -y libffi libffi-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Ensure that xattr is present
+RUN pip install xattr
