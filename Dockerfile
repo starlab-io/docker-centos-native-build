@@ -33,3 +33,10 @@ RUN yum install -y libffi libffi-devel && \
 
 # Ensure that xattr is present
 RUN pip install xattr
+
+# Install dracut and its depends
+RUN yum install -y dracut-network nfs-utils && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+COPY dracut.conf /etc/dracut.conf
