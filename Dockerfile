@@ -31,6 +31,9 @@ RUN yum install -y libffi libffi-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
+# Install CONFIG_STACK_VALIDATION dependencies
+RUN yum install -y elfutils-libelf-devel
+
 # Ensure that xattr is present
 RUN pip install xattr
 
