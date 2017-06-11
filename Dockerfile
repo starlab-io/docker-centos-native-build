@@ -37,7 +37,7 @@ RUN yum install -y elfutils-libelf-devel && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 # Install Matplotlib dependencies
-RUN yum install gcc gcc-c++ python-devel freetype-devel libpng-devel && \
+RUN yum install -y gcc gcc-c++ python-devel freetype-devel libpng-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/* && \
     pip install matplotlib
