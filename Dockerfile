@@ -51,3 +51,8 @@ RUN yum install -y dracut-network nfs-utils && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 COPY dracut.conf /etc/dracut.conf
+
+# Install trousers and its depends
+RUN yum install -y trousers && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
