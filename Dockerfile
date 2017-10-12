@@ -7,52 +7,36 @@ RUN mkdir -p /root/.cargo/
 ENV PATH "/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # install rustup
-RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && sh ./rustup-install.sh  -y && rm rustup-install.sh
-
-# Install x86_64 Rust
-RUN rustup default 1.15.1-x86_64-unknown-linux-gnu
+RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
+    sh ./rustup-install.sh -y --default-toolchain 1.20.0-x86_64-unknown-linux-gnu && \
+    rm rustup-install.sh
 
 # Install rustfmt / cargo fmt for testing
-RUN cargo install --root /usr/local rustfmt --vers 0.8.0
+RUN cargo install --root /usr/local rustfmt --vers 0.8.6
 
 # Install yum-plugin-ovl to work around issue with a bad
 # rpmdb checksum
-RUN yum install -y yum-plugin-ovl && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
-
 # Install xxd and attr utilities
-RUN yum install -y vim-common attr && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
-
-# Install libffi
-RUN yum install -y libffi libffi-devel && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
-
 # Install CONFIG_STACK_VALIDATION dependencies
-RUN yum install -y elfutils-libelf-devel && \
+RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
+        elfutils-libelf-devel gcc gcc-c++ python-devel freetype-devel \
+        libpng-devel dracut-network nfs-utils trousers-devel libtool && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
-
-# Install Matplotlib dependencies
-RUN yum install -y gcc gcc-c++ python-devel freetype-devel libpng-devel && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/* && \
-    pip install matplotlib
 
 # Ensure that xattr is present
 RUN pip install xattr
-
-# Install dracut and its depends
-RUN yum install -y dracut-network nfs-utils && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+RUN pip install matplotlib
 
 COPY dracut.conf /etc/dracut.conf
 
-# Install trousers and its depends
-RUN yum install -y trousers-devel && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+RUN curl -sSfL https://github.com/01org/tpm2-tss/releases/download/1.2.0/tpm2-tss-1.2.0.tar.gz > tpm2-tss-1.2.0.tar.gz && \
+    tar -zxf tpm2-tss-1.2.0.tar.gz && \
+    cd tpm2-tss-1.2.0 && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf tpm2-tss-1.2.0 && \
+    rm -rf tpm2-tss-1.2.0.tar.gz && \
+    ldconfig
