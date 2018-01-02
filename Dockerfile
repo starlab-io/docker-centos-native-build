@@ -40,3 +40,18 @@ RUN curl -sSfL https://github.com/01org/tpm2-tss/releases/download/1.2.0/tpm2-ts
     rm -rf tpm2-tss-1.2.0 && \
     rm -rf tpm2-tss-1.2.0.tar.gz && \
     ldconfig
+
+# Install EPEL
+RUN yum install -y epel-release && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Install Xen build dependencies
+RUN yum install -y libidn-devel zlib-devel SDL-devel curl-devel \
+		libX11-devel ncurses-devel gtk2-devel libaio-devel dev86 iasl \
+		gettext gnutls-devel openssl-devel pciutils-devel libuuid-devel \
+		bzip2-devel xz-devel e2fsprogs-devel yajl-devel mingw64-binutils \
+		systemd-devel glibc-devel.i686 \
+        && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
