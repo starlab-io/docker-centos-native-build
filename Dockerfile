@@ -51,7 +51,7 @@ RUN yum install -y libidn-devel zlib-devel SDL-devel curl-devel \
 		libX11-devel ncurses-devel gtk2-devel libaio-devel dev86 iasl \
 		gettext gnutls-devel openssl-devel pciutils-devel libuuid-devel \
 		bzip2-devel xz-devel e2fsprogs-devel yajl-devel mingw64-binutils \
-		systemd-devel glibc-devel.i686 \
+		systemd-devel glibc-devel.i686 texinfo \
         && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
