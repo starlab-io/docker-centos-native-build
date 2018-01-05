@@ -55,3 +55,9 @@ RUN yum install -y libidn-devel zlib-devel SDL-devel curl-devel \
         && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Install checkpolicy for XSM Xen
+RUN yum install -y checkpolicy \
+        && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
