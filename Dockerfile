@@ -12,7 +12,7 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     rm rustup-install.sh
 
 # Install rustfmt / cargo fmt for testing
-RUN cargo install --root /usr/local rustfmt --vers 0.8.6
+RUN cargo install --force rustfmt --vers 0.8.6
 
 # Install yum-plugin-ovl to work around issue with a bad
 # rpmdb checksum
