@@ -24,7 +24,7 @@ RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN pip install xattr matplotlib requests
+RUN pip install xattr matplotlib requests behave pyhamcrest
 
 COPY dracut.conf /etc/dracut.conf
 
