@@ -59,3 +59,21 @@ RUN yum install -y checkpolicy \
         && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Install grub2 build dependencies
+RUN yum install -y device-mapper-devel freetype-devel gettext-devel texinfo \
+		dejavu-sans-fonts help2man libusb-devel rpm-devel glibc-static.x86_64 \
+		glibc-static.i686 autogen \
+        && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Install yum-utils
+RUN yum install -y yum-utils \
+        && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+COPY build_binutils /tmp
+
+RUN /tmp/build_binutils
