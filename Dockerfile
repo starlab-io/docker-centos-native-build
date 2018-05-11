@@ -1,5 +1,5 @@
-FROM starlabio/centos-base:1.2
-MAINTAINER Doug Goldstein <doug@starlab.io>
+FROM starlabio/centos-base:2
+MAINTAINER David Esler <david.esler@starlab.io>
 
 # setup linkers for Cargo
 RUN mkdir -p /root/.cargo/
@@ -74,6 +74,8 @@ RUN yum install -y yum-utils \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-COPY build_binutils /tmp
+COPY install_gcc_7.5 build_binutils /tmp/
 
 RUN /tmp/build_binutils
+
+RUN /tmp/install_gcc_7.5
