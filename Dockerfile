@@ -81,6 +81,6 @@ RUN /tmp/build_binutils
 RUN /tmp/install_gcc_7.5
 
 # Add check and JSON dependencies
-RUN yum install -y check valgrind json-c-devel subunit subunit-devel && \
+RUN yum install -y check check-devel valgrind json-c-devel subunit subunit-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
