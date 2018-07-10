@@ -28,17 +28,6 @@ RUN pip install xattr matplotlib requests behave pyhamcrest
 
 COPY dracut.conf /etc/dracut.conf
 
-RUN curl -sSfL https://github.com/01org/tpm2-tss/releases/download/1.2.0/tpm2-tss-1.2.0.tar.gz > tpm2-tss-1.2.0.tar.gz && \
-    tar -zxf tpm2-tss-1.2.0.tar.gz && \
-    cd tpm2-tss-1.2.0 && \
-    ./configure --prefix=/usr && \
-    make && \
-    make install && \
-    cd .. && \
-    rm -rf tpm2-tss-1.2.0 && \
-    rm -rf tpm2-tss-1.2.0.tar.gz && \
-    ldconfig
-
 # Install EPEL
 RUN yum install -y epel-release && \
     yum clean all && \
@@ -82,5 +71,9 @@ RUN /tmp/install_gcc_7.5
 
 # Add check and JSON dependencies
 RUN yum install -y check check-devel valgrind json-c-devel subunit subunit-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+RUN yum install -y tpm2-tss-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
