@@ -77,3 +77,8 @@ RUN yum install -y check check-devel valgrind json-c-devel subunit subunit-devel
 RUN yum install -y tpm2-tss-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Add libraries for building cryptsetup and friends
+RUN yum install -y libgcrypt-devel libpwquality-devel libblkid-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
