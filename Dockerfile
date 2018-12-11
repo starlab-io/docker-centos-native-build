@@ -9,7 +9,7 @@ ADD proxy.crt /etc/pki/ca-trust/source/anchors/
 RUN update-ca-trust extract
 
 RUN yum groupinstall -y 'Development Tools' &&\
-    yum install -y git openssl centos-release-scl trousers-devel && \
+    yum install -y git openssl openssl-devel centos-release-scl trousers-devel && \
     yum install -y python27 && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
