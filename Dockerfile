@@ -24,7 +24,9 @@ RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN pip install xattr matplotlib requests behave pyhamcrest
+# TODO: matplotlib==2.2.3 is the LTS version, if we upgrade this, we have to
+# upgrade python to 3.x
+RUN pip install xattr matplotlib==2.2.3 requests behave pyhamcrest
 
 COPY dracut.conf /etc/dracut.conf
 
@@ -63,11 +65,15 @@ RUN yum install -y yum-utils \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-COPY install_gcc_7.5 build_binutils /tmp/
+COPY build_binutils /tmp/
 
 RUN /tmp/build_binutils
 
-RUN /tmp/install_gcc_7.5
+## Upstream now has ghcc-4.8.5-36 which is greater then the -28 we were forcing
+RUN yum install -y gcc && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 
 # Add check and JSON dependencies
 RUN yum install -y check check-devel valgrind json-c-devel subunit subunit-devel && \
@@ -80,5 +86,10 @@ RUN yum install -y tpm2-tss-devel && \
 
 # Add libraries for building cryptsetup and friends
 RUN yum install -y libgcrypt-devel libpwquality-devel libblkid-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Add rpmsign and createrepo for building the Yum release repos
+RUN yum install -y gpg createrepo rpmsign && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
