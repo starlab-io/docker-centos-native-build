@@ -69,7 +69,7 @@ COPY build_binutils /tmp/
 
 RUN /tmp/build_binutils
 
-## Upstream now has ghcc-4.8.5-36 which is greater then the -28 we were forcing
+## Upstream now has gcc-4.8.5-36 which is greater then the -28 we were forcing
 RUN yum install -y gcc && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
