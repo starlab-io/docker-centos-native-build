@@ -90,6 +90,7 @@ RUN yum install -y libgcrypt-devel libpwquality-devel libblkid-devel && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 # Add rpmsign and createrepo for building the Yum release repos
-RUN yum install -y gpg createrepo rpmsign && \
+RUN yum install -y gpg createrepo rpmsign \
+                libxslt-devel libxml2-devel libyaml-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
