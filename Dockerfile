@@ -74,9 +74,9 @@ RUN yum install -y gcc && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-
 # Add check and JSON dependencies
-RUN yum install -y check check-devel valgrind json-c-devel subunit subunit-devel && \
+RUN yum install -y check check-devel valgrind json-c-devel subunit \
+        cppcheck subunit-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
