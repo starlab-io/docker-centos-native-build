@@ -1,4 +1,4 @@
-FROM starlabio/centos-base:2
+FROM starlabio/centos-base:3
 MAINTAINER David Esler <david.esler@starlab.io>
 
 # setup linkers for Cargo
@@ -20,6 +20,7 @@ RUN cargo install --force rustfmt --vers 0.8.6
 # Install CONFIG_STACK_VALIDATION dependencies
 RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
         elfutils-libelf-devel gcc gcc-c++ python-devel freetype-devel \
+        libgcc.i686 libgcc-devel.i686 gcc-aarch64-linux-gnu.x86_64 \
         libpng-devel dracut-network nfs-utils trousers-devel libtool && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
