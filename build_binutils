@@ -29,6 +29,6 @@ patch -p0 << END
 END
 rpmbuild -ba binutils.spec || die "Failed to build binutils"
 cd ../RPMS/x86_64/
-rpm -U binut*.rpm || die "Failed to install binutils RPM"
+rpm -U --force binut*.rpm || die "Failed to install binutils RPM"
 cd /root
 rm -rf rpmbuild
