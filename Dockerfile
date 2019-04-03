@@ -20,7 +20,6 @@ RUN cargo install --force rustfmt --vers 0.8.6
 # Install CONFIG_STACK_VALIDATION dependencies
 RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
         elfutils-libelf-devel gcc gcc-c++ python-devel freetype-devel \
-        libgcc.i686 libgcc-devel.i686 \
         libpng-devel dracut-network nfs-utils trousers-devel libtool && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
@@ -97,6 +96,6 @@ RUN yum install -y gpg createrepo rpmsign \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN yum install -y gcc-aarch64-linux-gnu \
+RUN yum install -y gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
