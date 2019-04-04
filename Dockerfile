@@ -18,9 +18,10 @@ RUN cargo install --force rustfmt --vers 0.8.6
 # rpmdb checksum
 # Install xxd and attr utilities
 # Install CONFIG_STACK_VALIDATION dependencies
+# Install which required to build RedHawk 6 OpenOnLoad subsystem
 RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
         elfutils-libelf-devel gcc gcc-c++ python-devel freetype-devel \
-        libpng-devel dracut-network nfs-utils trousers-devel libtool && \
+        libpng-devel dracut-network nfs-utils trousers-devel libtool which && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
