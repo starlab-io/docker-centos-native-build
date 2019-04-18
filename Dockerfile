@@ -97,6 +97,11 @@ RUN yum install -y gpg createrepo rpmsign \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
+# Add tools for building the driverdomain image
+RUN yum install -y squashfs-tools \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 RUN yum install -y gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
