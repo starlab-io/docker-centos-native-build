@@ -102,6 +102,11 @@ RUN yum install -y squashfs-tools \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
+# Add ccache for development use
+RUN yum install -y ccache \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 RUN yum install -y gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
