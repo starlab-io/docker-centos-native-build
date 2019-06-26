@@ -110,3 +110,9 @@ RUN yum install -y ccache \
 RUN yum install -y gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Install ronn for generating man pages
+RUN yum install -y ruby-devel \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/* && \
+    gem install ronn
