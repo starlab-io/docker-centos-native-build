@@ -8,11 +8,11 @@ ENV PATH "/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sb
 
 # install rustup
 RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
-    sh ./rustup-install.sh -y --default-toolchain 1.26.2-x86_64-unknown-linux-gnu && \
+    sh ./rustup-install.sh -y --default-toolchain 1.37.0-x86_64-unknown-linux-gnu && \
     rm rustup-install.sh
 
 # Install rustfmt / cargo fmt for testing
-RUN cargo install --force rustfmt --vers 0.8.6
+RUN rustup component add rustfmt
 
 # Install yum-plugin-ovl to work around issue with a bad
 # rpmdb checksum
@@ -27,7 +27,8 @@ RUN yum install -y yum-plugin-ovl vim-common attr libffi libffi-devel \
 
 # TODO: matplotlib==2.2.3 is the LTS version, if we upgrade this, we have to
 # upgrade python to 3.x
-RUN pip install xattr matplotlib==2.2.3 requests behave pyhamcrest
+RUN pip install numpy==1.16.0
+RUN pip install xattr requests behave pyhamcrest matplotlib==2.2.3
 
 COPY dracut.conf /etc/dracut.conf
 
