@@ -96,6 +96,9 @@ RUN yum install -y gpg createrepo rpmsign \
                 libxslt-devel libxml2-devel libyaml-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+    # Set digest algorithms to be NIAP compatible (SHA256)
+    echo "%_source_filedigest_algorithm 8" >> /etc/rpm/macros
+    echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
 
 # Add tools for building the driverdomain image
 RUN yum install -y squashfs-tools \
