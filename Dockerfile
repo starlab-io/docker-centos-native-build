@@ -102,21 +102,33 @@ RUN yum install -y gpg createrepo rpmsign \
     echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
 
 # Add tools for building the driverdomain image
-RUN yum install -y squashfs-tools \
+RUN yum install -y squashfs-tools && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 # Add ccache for development use
-RUN yum install -y ccache \
+RUN yum install -y ccache && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN yum install -y gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
+RUN yum install -y gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 # Install ronn for generating man pages
-RUN yum install -y ruby-devel \
+RUN yum install -y ruby-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/* && \
     gem install ronn
+
+# Various systemd build requirements
+RUN yum install -y gperf libcap-devel libmount-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Newer curl for systemd
+COPY yum.repos.d/city-fan.repo /etc/yum.repos.d/
+RUN yum update -y curl \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
