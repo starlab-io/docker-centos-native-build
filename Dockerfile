@@ -132,3 +132,8 @@ RUN yum update -y curl \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
+# Add SELinux policy devel
+RUN yum install -y selinux-policy-devel && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
