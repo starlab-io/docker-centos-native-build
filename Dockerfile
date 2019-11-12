@@ -137,3 +137,14 @@ RUN yum install -y selinux-policy-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
+# Add argbash
+# sed command is to prevent installing man pages
+ARG ARGBASH_VERSION=2.8.1
+ARG ARGBASH_FILE=${ARGBASH_VERSION}.tar.gz
+RUN wget -nv https://github.com/matejak/argbash/archive/${ARGBASH_FILE} && \
+    tar xf ${ARGBASH_FILE} && \
+    sed -i '/^'$'\t''cp -p \$(MANPAGE) "\$(ROOT)\/\$(PREFIX)\/share\/man\/man1\/"$/d' \
+        argbash-${ARGBASH_VERSION}/resources/Makefile && \
+    make -C argbash-${ARGBASH_VERSION}/resources PREFIX=/usr/local MANPAGE= install && \
+    rm ${ARGBASH_FILE} && \
+    rm -r argbash-${ARGBASH_VERSION}
