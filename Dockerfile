@@ -137,14 +137,51 @@ RUN yum install -y selinux-policy-devel && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-# Add argbash
-# sed command is to prevent installing man pages
-ARG ARGBASH_VERSION=2.8.1
-ARG ARGBASH_FILE=${ARGBASH_VERSION}.tar.gz
-RUN wget -nv https://github.com/matejak/argbash/archive/${ARGBASH_FILE} && \
-    tar xf ${ARGBASH_FILE} && \
-    sed -i '/^'$'\t''cp -p \$(MANPAGE) "\$(ROOT)\/\$(PREFIX)\/share\/man\/man1\/"$/d' \
-        argbash-${ARGBASH_VERSION}/resources/Makefile && \
-    make -C argbash-${ARGBASH_VERSION}/resources PREFIX=/usr/local MANPAGE= install && \
-    rm ${ARGBASH_FILE} && \
-    rm -r argbash-${ARGBASH_VERSION}
+COPY chet_ramey_gpgkey.asc /tmp
+
+ARG BASH_VER=5.0
+RUN wget -nv http://ftp.gnu.org/gnu/bash/bash-${BASH_VER}.tar.gz.sig && \
+    wget -nv http://ftp.gnu.org/gnu/bash/bash-${BASH_VER}.tar.gz && \
+    gpg --import /tmp/chet_ramey_gpgkey.asc && \
+    gpg --verify bash-${BASH_VER}.tar.gz.sig && \
+    tar xf bash-${BASH_VER}.tar.gz && \
+    pushd bash-${BASH_VER} && \
+    ./configure \
+        --prefix=/ \
+        --enable-alias \
+        --enable-arith-for-command \
+        --enable-array-variables \
+        --enable-bang-history \
+        --enable-brace-expansion \
+        --enable-command-timing \
+        --enable-cond-command \
+        --enable-cond-regexp \
+        --enable-coprocesses \
+        --enable-debugger \
+        --enable-dev-fd-stat-broken \
+        --enable-directory-stack \
+        --enable-disabled-builtins \
+        --enable-dparen-arithmetic \
+        --enable-extended-glob \
+        --enable-function-import \
+        --enable-help-builtin \
+        --enable-history \
+        --enable-job-control \
+        --enable-multibyte \
+        --enable-net-redirections \
+        --enable-process-substitution \
+        --enable-progcomp \
+        --enable-prompt-string-decoding \
+        --enable-readline \
+        --enable-restricted \
+        --enable-select \
+        --enable-separate-helpfiles \
+        --enable-mem-scramble \
+        --enable-profiling && \
+    make && \
+    make install && \
+    popd && \
+    rm bash-${BASH_VER}.tar.gz.sig && \
+    rm bash-${BASH_VER}.tar.gz && \
+    rm /tmp/chet_ramey_gpgkey.asc && \
+    rm -r bash-${BASH_VER}
