@@ -181,3 +181,10 @@ RUN cd /tmp/ && \
     popd && \
     rm bash-${BASH_VER}.tar.gz{,.sig} /tmp/bash_pub_key && \
     rm -r bash-${BASH_VER}
+
+ARG SHELLCHECK_VER=v0.7.0
+RUN wget -nv https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+    tar xf shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+    install shellcheck-${SHELLCHECK_VER}/shellcheck /usr/local/bin && \
+    rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+    rm -r shellcheck-${SHELLCHECK_VER}
