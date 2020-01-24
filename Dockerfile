@@ -188,3 +188,10 @@ RUN wget -nv https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_V
     install shellcheck-${SHELLCHECK_VER}/shellcheck /usr/local/bin && \
     rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
     rm -r shellcheck-${SHELLCHECK_VER}
+
+# Add prelink for execstack
+RUN yum install -y prelink && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+
