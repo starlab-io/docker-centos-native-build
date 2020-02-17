@@ -194,4 +194,7 @@ RUN yum install -y prelink && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-
+# Add pigz for tarball gzipping in parallel
+RUN yum install -y pigz && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
