@@ -198,3 +198,8 @@ RUN yum install -y prelink && \
 RUN yum install -y pigz && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Add hmaccalc for generating FIPS hmac files
+RUN yum install -y hmaccalc && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
