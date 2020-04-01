@@ -205,3 +205,22 @@ RUN yum install -y pigz && \
 RUN yum install -y hmaccalc && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
+# Remove the system cscope and rebuild it ourselves.
+# This will bring us from version 15.8 -> 15.9.
+# But more importantly, we have stolen the patches from the Ubuntu cscope
+# deb, patches which fix the problem of cscope not recognizing functions
+# which take functions as arguments.
+# This fix adds a lot of functions in the Linux kernel to the index that
+# cscope produces.
+COPY cscope /tmp/cscope
+ARG CSCOPE_VER=15.9
+RUN yum erase -y cscope && \
+    cd /tmp/cscope && \
+    tar xf cscope-${CSCOPE_VER}.tar.gz && \
+    cd cscope-${CSCOPE_VER} && \
+    for p in ../patches/*.patch; do patch -p1 < "$p"; done && \
+    ./configure --prefix=/usr && \
+    make -j$(nproc) && \
+    make install && \
+    cd /tmp && rm -r cscope
