@@ -71,14 +71,13 @@ RUN yum update -y && yum install -y \
 RUN echo "%_source_filedigest_algorithm 8" >> /etc/rpm/macros && \
     echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
 
-# setup linkers for Cargo
-RUN mkdir -p /root/.cargo/
-
-ENV PATH "/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV PATH "/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 # install rustup
+ENV CARGO_HOME=/usr/local/cargo
+ENV RUSTUP_HOME=/etc/local/cargo/rustup
 RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
-    sh ./rustup-install.sh -y --default-toolchain 1.37.0-x86_64-unknown-linux-gnu && \
+    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.37.0-x86_64-unknown-linux-gnu && \
     rm rustup-install.sh
 
 # Install rustfmt / cargo fmt for testing
