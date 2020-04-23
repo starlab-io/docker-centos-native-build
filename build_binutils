@@ -17,7 +17,7 @@ patch -p0 << END
 @@ -263,6 +263,11 @@
      ;;
  esac
- 
+
 +case %{binutils_target} in x86_64*|i?86*|arm*|aarch64*)
 +  CARGS="$CARGS --enable-targets=x86_64-pep"
 +  ;;
@@ -29,6 +29,5 @@ patch -p0 << END
 END
 rpmbuild -ba binutils.spec || die "Failed to build binutils"
 cd ../RPMS/x86_64/
-rpm -U --force binut*.rpm || die "Failed to install binutils RPM"
-cd /root
-rm -rf rpmbuild
+mkdir -p /tmp/binutils_install/
+cp binut*.rpm /tmp/binutils_install/
