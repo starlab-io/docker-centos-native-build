@@ -1,5 +1,6 @@
-FROM starlabio/centos-base:3
-MAINTAINER David Esler <david.esler@starlab.io>
+FROM starlabio/centos-base:3 AS main
+
+LABEL maintainer="David Esler <david.esler@starlab.io>; Pete Dietl <pete.dietl@starlab.io>"
 
 # Install EPEL
 # Install yum-plugin-ovl to work around issue with a bad
@@ -62,26 +63,26 @@ RUN yum update -y && yum install -y \
     # Add hmaccalc for generating FIPS hmac files
     hmaccalc \
     # Add SELinux policy devel
-    selinux-policy-devel && \
+    selinux-policy-devel \
+    # For running as a non-root user but being able to up privileges
+    sudo \
+    # Because VIM!
+    vim && \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-# Set digest algorithms to be NIAP compatible (SHA256)
-RUN echo "%_source_filedigest_algorithm 8" >> /etc/rpm/macros && \
-    echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
+ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    CARGO_HOME=/usr/local/cargo \
+    RUSTUP_HOME=/etc/local/cargo/rustup
 
-ENV PATH "/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
-# install rustup
-ENV CARGO_HOME=/usr/local/cargo
-ENV RUSTUP_HOME=/etc/local/cargo/rustup
+# install rustup in a globally accessible location
 RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.37.0-x86_64-unknown-linux-gnu && \
-    rm rustup-install.sh
-
-# Install rustfmt / cargo fmt for testing
-RUN rustup component add rustfmt
+    rm rustup-install.sh && \
+                            \
+    # Install rustfmt / cargo fmt for testing
+    rustup component add rustfmt
 
 # TODO: matplotlib==2.2.3 is the LTS version, if we upgrade this, we have to
 # upgrade python to 3.x
@@ -91,10 +92,26 @@ RUN pip install --upgrade pip && \
 # Install ronn for generating man pages
 RUN gem install ronn
 
-COPY dracut.conf /etc/dracut.conf
+# Set digest algorithms to be NIAP compatible (SHA256)
+RUN echo "%_source_filedigest_algorithm 8" >> /etc/rpm/macros && \
+    echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
+
+ARG SHELLCHECK_VER=v0.7.0
+RUN wget -nv https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+    tar xf shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+    install shellcheck-${SHELLCHECK_VER}/shellcheck /usr/local/bin && \
+    rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+    rm -r shellcheck-${SHELLCHECK_VER}
+
+###
+### BEGIN intermediate multi-stage build layers
+###
+
+FROM main AS binutils
 COPY build_binutils /tmp/
 RUN /tmp/build_binutils
 
+FROM main AS bash
 COPY bash_pub_key /tmp
 ARG BASH_VER=5.0
 RUN cd /tmp/ && \
@@ -103,7 +120,7 @@ RUN cd /tmp/ && \
     gpg --import bash_pub_key && \
     gpg --verify bash-${BASH_VER}.tar.gz.sig && \
     tar xf bash-${BASH_VER}.tar.gz && \
-    pushd bash-${BASH_VER} && \
+    cd bash-${BASH_VER} && \
     ./configure \
         --prefix=/usr/local \
         --enable-alias \
@@ -134,17 +151,7 @@ RUN cd /tmp/ && \
         --enable-separate-helpfiles \
         --enable-mem-scramble && \
     make && \
-    make install && \
-    popd && \
-    rm bash-${BASH_VER}.tar.gz{,.sig} /tmp/bash_pub_key && \
-    rm -r bash-${BASH_VER}
-
-ARG SHELLCHECK_VER=v0.7.0
-RUN wget -nv https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
-    tar xf shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
-    install shellcheck-${SHELLCHECK_VER}/shellcheck /usr/local/bin && \
-    rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
-    rm -r shellcheck-${SHELLCHECK_VER}
+    make install DESTDIR=/tmp/bash_install
 
 # Remove the system cscope and rebuild it ourselves.
 # This will bring us from version 15.8 -> 15.9.
@@ -153,6 +160,7 @@ RUN wget -nv https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_V
 # which take functions as arguments.
 # This fix adds a lot of functions in the Linux kernel to the index that
 # cscope produces.
+FROM main AS cscope
 COPY cscope /tmp/cscope
 ARG CSCOPE_VER=15.9
 RUN yum erase -y cscope && \
@@ -162,5 +170,51 @@ RUN yum erase -y cscope && \
     for p in ../patches/*.patch; do patch -p1 < "$p"; done && \
     ./configure --prefix=/usr && \
     make -j$(nproc) && \
-    make install && \
-    cd /tmp && rm -r cscope
+    make install DESTDIR=/tmp/cscope_install
+
+FROM main as sudoers
+COPY add_user_to_sudoers /tmp/add_user_to_sudoers
+RUN cd /tmp/add_user_to_sudoers && \
+    cargo build --release && \
+    mkdir -p /tmp/sudoers_install && \
+    install -m 4755 -t /tmp/sudoers_install target/release/add_user_to_sudoers
+
+
+###
+### END intermediate multi-stage build layers
+###
+
+
+FROM main
+# Not ideal having to copy over the RPM, since it will still stick around
+COPY --from=binutils /tmp/binutils_install /tmp/binutils/
+RUN  if ! rpm -U --force /tmp/binutils/binut*.rpm; then \
+    echo "Failed to install binutils RPM" >&2; \
+    exit 1; \
+    fi && rm -rf /tmp/binutils/
+COPY --from=bash /tmp/bash_install /
+COPY --from=cscope /tmp/cscope_install /
+COPY --from=sudoers /tmp/sudoers_install/add_user_to_sudoers /usr/local/bin/add_user_to_sudoers
+
+COPY vimrc /tmp/vimrc
+COPY dracut.conf /etc/dracut.conf
+
+RUN \
+    # install some nice defaults for vim and bash
+    cat /tmp/vimrc >> /etc/vimrc && \
+    rm /tmp/vimrc && \
+    { \
+        echo "PS1='[\u@centos-docker \w]'" && \
+        echo "if [ \$(id -u) -eq 0 ]; then PS1+='# '; else PS1+='$ '; fi" && \
+        echo "alias su='su -l'"; \
+    } | tee -a /etc/profile >> /etc/bashrc && \
+                                              \
+    # Let regular users be able to use sudo
+    echo $'auth       sufficient    pam_permit.so\n\
+account    sufficient    pam_permit.so\n\
+session    sufficient    pam_permit.so\n\
+' > /etc/pam.d/sudo
+
+COPY startup_script /usr/local/bin/startup_script
+ENTRYPOINT ["/usr/local/bin/startup_script"]
+CMD ["/bin/bash", "-l"]
