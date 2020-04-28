@@ -67,7 +67,11 @@ RUN yum update -y && yum install -y \
     # For running as a non-root user but being able to up privileges
     sudo \
     # Because VIM!
-    vim && \
+    vim \
+    # For debugging
+    strace \
+    # For tracing files in filesystem
+    tree && \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
@@ -200,6 +204,11 @@ COPY vimrc /tmp/vimrc
 COPY dracut.conf /etc/dracut.conf
 
 RUN \
+    # This is majorly stupid, but COPY does not implement any way to
+    # do something like --chmod. It also does not preserve SUID bit, so
+    # we have to set it again here...
+    chmod 4755 /usr/local/bin/add_user_to_sudoers && \
+                                                     \
     # install some nice defaults for vim and bash
     cat /tmp/vimrc >> /etc/vimrc && \
     rm /tmp/vimrc && \
