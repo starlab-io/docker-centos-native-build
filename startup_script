@@ -1,7 +1,13 @@
 #!/bin/bash
 
+set -e
+
 if [ "$UID" -ne 0 ]; then
     add_user_to_sudoers
+fi
+
+if [ -n "$USE_CCACHE" ]; then
+    source scripts/setup_ccache > /dev/null
 fi
 
 exec "$@"
