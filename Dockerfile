@@ -71,7 +71,11 @@ RUN yum update -y && yum install -y \
     # For debugging
     strace \
     # For tracing files in filesystem
-    tree && \
+    tree \
+    # zip
+    zip \
+    # Python3
+    python3 \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
@@ -176,13 +180,6 @@ RUN yum erase -y cscope && \
     make -j$(nproc) && \
     make install DESTDIR=/tmp/cscope_install
 
-FROM main as sudoers
-COPY add_user_to_sudoers /tmp/add_user_to_sudoers
-RUN cd /tmp/add_user_to_sudoers && \
-    cargo build --release && \
-    mkdir -p /tmp/sudoers_install && \
-    install -m 4755 -t /tmp/sudoers_install target/release/add_user_to_sudoers
-
 
 ###
 ### END intermediate multi-stage build layers
@@ -198,32 +195,31 @@ RUN  if ! rpm -U --force /tmp/binutils/binut*.rpm; then \
     fi && rm -rf /tmp/binutils/
 COPY --from=bash /tmp/bash_install /
 COPY --from=cscope /tmp/cscope_install /
-COPY --from=sudoers /tmp/sudoers_install/add_user_to_sudoers /usr/local/bin/add_user_to_sudoers
 
 COPY vimrc /tmp/vimrc
 COPY dracut.conf /etc/dracut.conf
 
-RUN \
-    # This is majorly stupid, but COPY does not implement any way to
-    # do something like --chmod. It also does not preserve SUID bit, so
-    # we have to set it again here...
+ARG VER=1
+ARG ZIP_FILE=add-user-to-sudoers.zip
+RUN wget -nv "https://github.com/starlab-io/add-user-to-sudoers/releases/download/${VER}/${ZIP_FILE}" && \
+    unzip "${ZIP_FILE}" && \
+    rm "${ZIP_FILE}" && \
+    mkdir -p /usr/local/bin && \
+    mv add_user_to_sudoers /usr/local/bin/ && \
+    mv startup_script /usr/local/bin/ && \
     chmod 4755 /usr/local/bin/add_user_to_sudoers && \
-                                                     \
+    chmod +x /usr/local/bin/startup_script && \
     # install some nice defaults for vim and bash
     cat /tmp/vimrc >> /etc/vimrc && \
     rm /tmp/vimrc && \
-    { \
-        echo "PS1='[\u@centos-docker \w]'" && \
-        echo "if [ \$(id -u) -eq 0 ]; then PS1+='# '; else PS1+='$ '; fi" && \
-        echo "alias su='su -l'"; \
-    } | tee -a /etc/profile >> /etc/bashrc && \
-                                              \
     # Let regular users be able to use sudo
     echo $'auth       sufficient    pam_permit.so\n\
 account    sufficient    pam_permit.so\n\
 session    sufficient    pam_permit.so\n\
 ' > /etc/pam.d/sudo
 
-COPY startup_script /usr/local/bin/startup_script
+ENV LC_ALL=en_US.utf-8
+ENV LANG=en_US.utf-8
+
 ENTRYPOINT ["/usr/local/bin/startup_script"]
 CMD ["/bin/bash", "-l"]

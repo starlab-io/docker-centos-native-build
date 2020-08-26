@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [ "$UID" -ne 0 ]; then
-    add_user_to_sudoers
-fi
-
-exec "$@"
