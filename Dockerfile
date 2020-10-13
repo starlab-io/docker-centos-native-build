@@ -76,6 +76,8 @@ RUN yum update -y && yum install -y \
     zip \
     # Python3
     python3 \
+    # Lcov for code coverage
+    lcov \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
