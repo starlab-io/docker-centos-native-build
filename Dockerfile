@@ -1,6 +1,6 @@
 FROM starlabio/centos-base:3 AS main
 
-LABEL maintainer="David Esler <david.esler@starlab.io>; Pete Dietl <pete.dietl@starlab.io>"
+LABEL maintainer="Star Lab <info@starlab.io>"
 
 # Install EPEL
 # Install yum-plugin-ovl to work around issue with a bad
@@ -78,6 +78,8 @@ RUN yum update -y && yum install -y \
     python3 \
     # Lcov for code coverage
     lcov \
+    # quilt for patching
+    quilt \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
