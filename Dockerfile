@@ -111,7 +111,7 @@ RUN echo "%_source_filedigest_algorithm 8" >> /etc/rpm/macros && \
     echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
 
 ARG SHELLCHECK_VER=v0.7.0
-RUN wget -nv https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
+RUN wget -nv https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VER}/shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
     tar xf shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
     install shellcheck-${SHELLCHECK_VER}/shellcheck /usr/local/bin && \
     rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
