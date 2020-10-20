@@ -80,6 +80,8 @@ RUN yum update -y && yum install -y \
     lcov \
     # quilt for patching
     quilt \
+    # clang analyzer/scan-build
+    clang-analyzer \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
