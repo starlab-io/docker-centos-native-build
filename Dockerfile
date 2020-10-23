@@ -86,6 +86,13 @@ RUN yum update -y && yum install -y \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
+# Force newer version of GIT
+RUN yum erase -y git && \
+    yum update -y && yum install -y \
+    https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo.1.7-1.x86_64.rpm git && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     CARGO_HOME=/usr/local/cargo \
     RUSTUP_HOME=/etc/local/cargo/rustup
@@ -186,18 +193,9 @@ RUN yum erase -y cscope && \
     make -j$(nproc) && \
     make install DESTDIR=/tmp/cscope_install
 
-# Force newer version of GIT
-RUN yum erase -y git && \
-    yum update -y && yum install -y \
-    https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo.1.7-1.x86_64.rpm git && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
-
-
 ###
 ### END intermediate multi-stage build layers
 ###
-
 
 FROM main
 # Not ideal having to copy over the RPM, since it will still stick around
