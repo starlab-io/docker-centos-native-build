@@ -89,7 +89,7 @@ RUN yum update -y && yum install -y \
 # Force newer version of GIT
 RUN yum erase -y git && \
     yum update -y && yum install -y \
-    https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo.1.7-1.x86_64.rpm git && \
+    https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm git && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
