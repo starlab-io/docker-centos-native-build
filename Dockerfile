@@ -82,6 +82,8 @@ RUN yum update -y && yum install -y \
     quilt \
     # clang analyzer/scan-build
     clang-analyzer \
+    # parallel
+    parallel \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
