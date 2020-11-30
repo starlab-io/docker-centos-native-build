@@ -111,6 +111,9 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     # Install rustfmt / cargo fmt for testing
     rustup component add rustfmt
 
+# install the cargo license checker
+RUN cargo install cargo-license
+
 # TODO: matplotlib==2.2.3 is the LTS version, if we upgrade this, we have to
 # upgrade python to 3.x
 RUN pip install --upgrade pip && \
