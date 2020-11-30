@@ -6,6 +6,7 @@ die() {
 }
 
 echo "Current working directory: $(pwd)"
+yum-config-manager --disable centos-sclo-rh
 yumdownloader --source binutils || die "Failed to download binutils SRPM"
 rpm -hiv binutil*.src.rpm || die "Failed to install binutils SRPM"
 
