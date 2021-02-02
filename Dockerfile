@@ -141,67 +141,6 @@ FROM main AS binutils
 COPY build_binutils /tmp/
 RUN /tmp/build_binutils
 
-FROM main AS bash
-COPY bash_pub_key /tmp
-ARG BASH_VER=5.0
-RUN cd /tmp/ && \
-    wget -nv http://ftp.gnu.org/gnu/bash/bash-${BASH_VER}.tar.gz && \
-    wget -nv http://ftp.gnu.org/gnu/bash/bash-${BASH_VER}.tar.gz.sig && \
-    gpg --import bash_pub_key && \
-    gpg --verify bash-${BASH_VER}.tar.gz.sig && \
-    tar xf bash-${BASH_VER}.tar.gz && \
-    cd bash-${BASH_VER} && \
-    ./configure \
-        --prefix=/usr/local \
-        --enable-alias \
-        --enable-arith-for-command \
-        --enable-array-variables \
-        --enable-bang-history \
-        --enable-brace-expansion \
-        --enable-command-timing \
-        --enable-cond-command \
-        --enable-cond-regexp \
-        --enable-coprocesses \
-        --enable-debugger \
-        --enable-dev-fd-stat-broken \
-        --enable-directory-stack \
-        --enable-disabled-builtins \
-        --enable-dparen-arithmetic \
-        --enable-extended-glob \
-        --enable-help-builtin \
-        --enable-history \
-        --enable-job-control \
-        --enable-multibyte \
-        --enable-net-redirections \
-        --enable-process-substitution \
-        --enable-progcomp \
-        --enable-prompt-string-decoding \
-        --enable-readline \
-        --enable-select \
-        --enable-separate-helpfiles \
-        --enable-mem-scramble && \
-    make && \
-    make install DESTDIR=/tmp/bash_install
-
-# Remove the system cscope and rebuild it ourselves.
-# This will bring us from version 15.8 -> 15.9.
-# But more importantly, we have stolen the patches from the Ubuntu cscope
-# deb, patches which fix the problem of cscope not recognizing functions
-# which take functions as arguments.
-# This fix adds a lot of functions in the Linux kernel to the index that
-# cscope produces.
-FROM main AS cscope
-COPY cscope /tmp/cscope
-ARG CSCOPE_VER=15.9
-RUN yum erase -y cscope && \
-    cd /tmp/cscope && \
-    tar xf cscope-${CSCOPE_VER}.tar.gz && \
-    cd cscope-${CSCOPE_VER} && \
-    for p in ../patches/*.patch; do patch -p1 < "$p"; done && \
-    ./configure --prefix=/usr && \
-    make -j$(nproc) && \
-    make install DESTDIR=/tmp/cscope_install
-
 ###
 ### END intermediate multi-stage build layers
 ###
@@ -213,8 +152,6 @@ RUN  if ! rpm -U --force /tmp/binutils/binut*.rpm; then \
     echo "Failed to install binutils RPM" >&2; \
     exit 1; \
     fi && rm -rf /tmp/binutils/
-COPY --from=bash /tmp/bash_install /
-COPY --from=cscope /tmp/cscope_install /
 
 COPY vimrc /tmp/vimrc
 COPY dracut.conf /etc/dracut.conf
