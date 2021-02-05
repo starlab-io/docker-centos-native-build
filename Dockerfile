@@ -94,6 +94,10 @@ RUN yum update -y && yum install -y \
     # lcov
     rpm -ivh http://downloads.sourceforge.net/ltp/lcov-1.14-1.noarch.rpm
 
+# build dependencies in powertools repo
+RUN yum install -y --enablerepo=powertools execstack glibc-static && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     CARGO_HOME=/usr/local/cargo \
     RUSTUP_HOME=/etc/local/cargo/rustup
