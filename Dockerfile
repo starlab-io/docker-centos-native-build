@@ -116,12 +116,18 @@ RUN cargo install cargo-license
 RUN pip3 install --upgrade pip && \
     pip3 install numpy xattr requests behave pyhamcrest matplotlib
 
+RUN alternatives --set python /usr/bin/python3
+
 # Install ronn for generating man pages
 RUN gem install ronn
 
 # Set digest algorithms to be NIAP compatible (SHA256)
 RUN echo "%_source_filedigest_algorithm 8" >> /etc/rpm/macros && \
-    echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros
+    echo "%_binary_filedigest_algorithm 8" >> /etc/rpm/macros && \
+    echo "%_smp_ncpus_max 0" >> /etc/rpm/macros && \
+    echo "%_source_payload  w6T0.xzdio" >> /etc/rpm/macros && \
+    echo "%_binary_payload  w6T0.xzdio" >> /etc/rpm/macros && \
+    echo "%_unpackaged_files_terminate_build 0" >> /etc/rpm/macros
 
 # Install shellcheck
 ARG SHELLCHECK_VER=v0.7.0
