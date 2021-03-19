@@ -62,7 +62,8 @@ RUN yum update -y && yum install -y \
     # Install yum dependencies for ronn
     ruby-devel \
     # Various systemd build requirements
-    gperf libcap-devel libmount-devel \
+    gperf libcap-devel libmount-devel meson libseccomp-devel libacl-devel kmod-devel \
+    pam-devel libmicrohttpd-devel cryptsetup-devel iptables-devel libxkbcommon-devel \
     # Add rpmsign and createrepo for building the Yum release repos
     gpg createrepo rpm-sign \
     libxslt-devel libxml2-devel libyaml-devel \
