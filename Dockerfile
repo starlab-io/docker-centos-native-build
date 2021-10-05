@@ -38,6 +38,9 @@ RUN yum update -y && yum install -y \
     gettext gnutls-devel pciutils-devel libuuid-devel \
     bzip2-devel xz-devel e2fsprogs e2fsprogs-devel yajl-devel mingw64-binutils \
     systemd-devel glibc-devel.i686 texinfo \
+    bzip2-devel.i686 zlib-devel.i686 openssl-devel.i686 \
+    python3-libselinux libselinux-utils libselinux-devel \
+    libselinux-devel.i686 \
     # Install checkpolicy for XSM Xen
     checkpolicy \
     # Install grub2 build dependencies
@@ -87,6 +90,8 @@ RUN yum update -y && yum install -y \
     quilt \
     # clang analyzer/scan-build
     clang-analyzer \
+    # Update the ssl certs
+    ca-certificates \
     # parallel
     parallel && \
     # Cleanup
@@ -110,6 +115,12 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
                             \
     # Install rustfmt / cargo fmt for testing
     rustup component add rustfmt
+
+# Setup the i686 target for rust
+RUN rustup target add i686-unknown-linux-gnu
+
+# Ugly, but required for successful i686 build
+RUN ln -sf /usr/bin/strip /usr/bin/i686-linux-gnu-strip
 
 # install the cargo license checker
 RUN cargo install cargo-license
