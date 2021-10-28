@@ -114,7 +114,8 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     rm rustup-install.sh && \
                             \
     # Install rustfmt / cargo fmt for testing
-    rustup component add rustfmt
+    rustup component add rustfmt && \
+    rustup component add clippy-preview
 
 # Setup the i686 target for rust
 RUN rustup target add i686-unknown-linux-gnu
