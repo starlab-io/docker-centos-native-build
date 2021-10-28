@@ -118,9 +118,10 @@ RUN cargo install cargo-license
 # TODO: matplotlib==2.2.3 is the LTS version, if we upgrade this, we have to
 # use specific get-pip.py script for 2.7 from pip 21.0 and newer, refer to
 # see https://stackoverflow.com/questions/65869296/installing-pip-is-not-working-in-bitbucket-ci/65871131#65871131
-RUN curl -O https://bootstrap.pypa.io/2.7/get-pip.py && \
+RUN curl -O https://web.archive.org/web/20210124123909if_/https://bootstrap.pypa.io/2.7/get-pip.py && \
     python2 ./get-pip.py && \
     python2 -m pip install --upgrade "pip < 21.0" && \
+    pip install cffi && \
     pip install numpy==1.16.0 xattr requests behave pyhamcrest matplotlib==2.2.3 && \
     rm ./get-pip.py
 
