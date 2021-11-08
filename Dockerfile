@@ -1,4 +1,4 @@
-FROM centos:8.3.2011
+FROM centos:centos8.4.2105
 
 LABEL maintainer="Star Lab <info@starlab.io>"
 
