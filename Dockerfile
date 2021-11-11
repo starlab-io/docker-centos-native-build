@@ -114,14 +114,22 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
 # install the cargo license checker
 RUN cargo install cargo-license
 
-# TODO: matplotlib==2.2.3 is the LTS version, if we upgrade this, we have to
-# use specific get-pip.py script for 2.7 from pip 21.0 and newer, refer to
-# see https://stackoverflow.com/questions/65869296/installing-pip-is-not-working-in-bitbucket-ci/65871131#65871131
-RUN curl -O https://bootstrap.pypa.io/2.7/get-pip.py && \
+# Build and install python 2.7 and pip pinned to less than v21
+RUN wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz && \
+    tar xfJ Python-2.7.18.tar.xz
+WORKDIR Python-2.7.18
+RUN ./configure --prefix=/usr/local && make && make altinstall && \
+    ln -s /usr/local/bin/python2.7 /usr/local/bin/python && \
+    ln -s /usr/local/bin/python2.7 /usr/local/bin/python2
+WORKDIR /
+RUN rm -rf /Python-2.7.18*
+RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python2 ./get-pip.py && \
     python2 -m pip install --upgrade "pip < 21.0" && \
-    pip install numpy==1.16.0 xattr requests behave pyhamcrest matplotlib==2.2.3 && \
     rm ./get-pip.py
+
+# install common packages we use in CI environments
+RUN pip install numpy==1.16.0 xattr requests behave pyhamcrest matplotlib==2.2.3
 
 # Install ronn for generating man pages
 RUN gem install ronn
