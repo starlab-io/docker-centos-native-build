@@ -2,6 +2,11 @@ FROM starlabio/centos-base:3 AS main
 
 LABEL maintainer="Star Lab <info@starlab.io>"
 
+# update certificates
+RUN yum -y update ca-certificates nss && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
+
 # Install EPEL
 # Install yum-plugin-ovl to work around issue with a bad
 # rpmdb checksum
