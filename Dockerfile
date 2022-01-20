@@ -32,6 +32,8 @@ RUN yum update -y && yum install -y \
     elfutils-libelf-devel gcc gcc-c++ freetype-devel \
     libpng-devel lz4-devel dracut-network nfs-utils trousers-devel \
     libtool which \
+    # Support for CONFIG_GCC_PLUGINS
+    gcc-plugin-devel.x86_64 \
     # Install Xen build dependencies
     libidn-devel zlib-devel SDL-devel curl-devel \
     libX11-devel gtk2-devel libaio-devel iasl \
