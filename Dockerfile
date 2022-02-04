@@ -4,6 +4,10 @@ LABEL maintainer="Star Lab <info@starlab.io>"
 
 RUN mkdir /source
 
+RUN find /etc/yum.repos.d/ -type f -exec sed -i 's/mirrorlist=/#mirrorlist=/g' {} + && \
+    find /etc/yum.repos.d/ -type f -exec sed -i 's/#baseurl=/baseurl=/g' {} + && \
+    find /etc/yum.repos.d/ -type f -exec sed -i 's/mirror.centos.org/vault.centos.org/g' {} +
+
 # Install EPEL
 RUN yum update -y && yum install -y \
     https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
@@ -31,7 +35,7 @@ RUN yum update -y && yum install -y \
     vim-common attr libffi libffi-devel \
     elfutils-libelf-devel gcc gcc-c++ freetype-devel \
     libpng-devel lz4-devel dracut-network nfs-utils trousers-devel \
-    libtool which \
+    libtool which libmnl-devel \
     # Support for CONFIG_GCC_PLUGINS
     gcc-plugin-devel.x86_64 \
     # Install Xen build dependencies
