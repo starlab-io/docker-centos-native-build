@@ -35,7 +35,7 @@ RUN yum update -y && yum install -y \
     vim-common attr libffi libffi-devel \
     elfutils-libelf-devel gcc gcc-c++ freetype-devel \
     libpng-devel lz4-devel dracut-network nfs-utils trousers-devel \
-    libtool which libmnl-devel \
+    libtool which libmnl-devel bpftool \
     # Support for CONFIG_GCC_PLUGINS
     gcc-plugin-devel.x86_64 \
     # Install Xen build dependencies
