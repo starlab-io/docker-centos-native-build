@@ -1,12 +1,8 @@
-FROM centos:centos8.4.2105
+FROM almalinux:8.4
 
 LABEL maintainer="Star Lab <info@starlab.io>"
 
 RUN mkdir /source
-
-RUN find /etc/yum.repos.d/ -type f -exec sed -i 's/mirrorlist=/#mirrorlist=/g' {} + && \
-    find /etc/yum.repos.d/ -type f -exec sed -i 's/#baseurl=/baseurl=/g' {} + && \
-    find /etc/yum.repos.d/ -type f -exec sed -i 's/mirror.centos.org/vault.centos.org/g' {} +
 
 # Install EPEL
 RUN yum update -y && yum install -y \
