@@ -1,4 +1,4 @@
-FROM almalinux:8.4
+FROM almalinux:8.5
 
 LABEL maintainer="Star Lab <info@starlab.io>"
 
