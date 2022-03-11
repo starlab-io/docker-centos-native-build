@@ -174,8 +174,8 @@ account    sufficient    pam_permit.so\n\
 session    sufficient    pam_permit.so\n\
 ' > /etc/pam.d/sudo
 
-ENV LC_ALL=en_US.utf-8
-ENV LANG=en_US.utf-8
+ENV LC_ALL=C.utf-8
+ENV LANG=C.utf-8
 
 VOLUME ["/source"]
 WORKDIR /source
