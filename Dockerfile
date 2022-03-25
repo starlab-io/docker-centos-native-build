@@ -94,6 +94,8 @@ RUN yum update -y && yum install -y \
     clang-analyzer \
     # Update the ssl certs
     ca-certificates \
+    # For running release tests
+    expect \
     # parallel
     parallel && \
     # Cleanup
