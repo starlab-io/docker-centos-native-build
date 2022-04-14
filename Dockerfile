@@ -90,9 +90,6 @@ RUN yum update -y && yum install -y \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN yum install -y centos-release-scl
-RUN yum install -y devtoolset-8-gcc
-
 # Force newer version of GIT
 RUN yum erase -y git && \
     yum update -y && yum install -y \
