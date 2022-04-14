@@ -84,6 +84,8 @@ RUN yum update -y && yum install -y \
     clang-analyzer \
     # parallel
     parallel \
+    # expect
+    expect \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
