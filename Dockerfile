@@ -116,13 +116,13 @@ RUN cargo install cargo-license
 
 # Build and install python 2.7 and pip pinned to less than v21
 RUN wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz && \
-    tar xfJ Python-2.7.18.tar.xz
-WORKDIR Python-2.7.18
-RUN ./configure --prefix=/usr/local && make && make altinstall && \
+    tar xfJ Python-2.7.18.tar.xz && \
+    cd Python-2.7.18 && \
+    ./configure --prefix=/usr/local && make && make altinstall && \
     ln -s /usr/local/bin/python2.7 /usr/local/bin/python && \
-    ln -s /usr/local/bin/python2.7 /usr/local/bin/python2
-WORKDIR /
-RUN rm -rf /Python-2.7.18*
+    ln -s /usr/local/bin/python2.7 /usr/local/bin/python2 && \
+    cd - && \
+    rm -rf /Python-2.7.18*
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python2 ./get-pip.py && \
     python2 -m pip install --upgrade "pip < 21.0" && \
