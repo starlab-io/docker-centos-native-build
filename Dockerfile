@@ -12,9 +12,6 @@ RUN yum -y update ca-certificates nss && \
 # rpmdb checksum
 RUN yum install -y epel-release yum-plugin-ovl
 
-# Newer curl for systemd
-COPY yum.repos.d/city-fan.repo /etc/yum.repos.d/
-
 RUN yum update -y && yum install -y \
     # Install xxd and attr utilities
     # Install CONFIG_STACK_VALIDATION dependencies
@@ -56,8 +53,6 @@ RUN yum update -y && yum install -y \
     gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
     # Install yum dependencies for ronn
     ruby-devel \
-    # Various systemd build requirements
-    gperf libcap-devel libmount-devel \
     # Add rpmsign and createrepo for building the Yum release repos
     gpg createrepo rpmsign \
     libxslt-devel libxml2-devel libyaml-devel \
