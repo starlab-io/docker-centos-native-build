@@ -9,15 +9,8 @@ RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Base* && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-# update certificates
-RUN yum -y update ca-certificates nss && \
-    yum clean all && \
-    rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
-
 # Install EPEL
-# Install yum-plugin-ovl to work around issue with a bad
-# rpmdb checksum
-RUN yum install -y epel-release yum-plugin-ovl
+RUN yum install -y epel-release 
 
 RUN yum update -y && yum install -y \
     # Install xxd and attr utilities
