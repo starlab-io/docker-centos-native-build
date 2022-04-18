@@ -120,7 +120,7 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     # Install rustfmt / cargo fmt for testing
     rustup component add rustfmt && \
     rustup component add clippy-preview && \
-    cargo install ripgrep
+    cargo install ripgrep --locked
 
 # Setup the i686 target for rust
 RUN rustup target add i686-unknown-linux-gnu
@@ -129,7 +129,7 @@ RUN rustup target add i686-unknown-linux-gnu
 RUN ln -sf /usr/bin/strip /usr/bin/i686-linux-gnu-strip
 
 # install the cargo license checker
-RUN cargo install cargo-license
+RUN cargo install cargo-license --locked
 
 RUN pip3 install --upgrade pip && \
     pip3 install numpy xattr requests behave pyhamcrest matplotlib
