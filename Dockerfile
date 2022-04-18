@@ -120,7 +120,10 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     # Install rustfmt / cargo fmt for testing
     rustup component add rustfmt && \
     rustup component add clippy-preview && \
-    cargo install ripgrep --locked
+    cargo install ripgrep --locked && \
+    # We need nightly to be able to use cargo udeps. Installing it like this does not make it default
+    rustup install nightly && \
+    cargo install cargo-udeps --locked
 
 # Setup the i686 target for rust
 RUN rustup target add i686-unknown-linux-gnu
