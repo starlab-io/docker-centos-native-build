@@ -114,12 +114,16 @@ ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:
 
 # install rustup in a globally accessible location
 RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
-    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.56.0-x86_64-unknown-linux-gnu && \
+    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.60.0-x86_64-unknown-linux-gnu && \
     rm rustup-install.sh && \
                             \
     # Install rustfmt / cargo fmt for testing
     rustup component add rustfmt && \
-    rustup component add clippy-preview
+    rustup component add clippy-preview && \
+    cargo install ripgrep --locked && \
+    # We need nightly to be able to use cargo udeps. Installing it like this does not make it default
+    rustup install nightly && \
+    cargo install cargo-udeps --locked
 
 # Setup the i686 target for rust
 RUN rustup target add i686-unknown-linux-gnu
@@ -128,7 +132,7 @@ RUN rustup target add i686-unknown-linux-gnu
 RUN ln -sf /usr/bin/strip /usr/bin/i686-linux-gnu-strip
 
 # install the cargo license checker
-RUN cargo install cargo-license
+RUN cargo install cargo-license --locked
 
 RUN pip3 install --upgrade pip && \
     pip3 install numpy xattr requests behave pyhamcrest matplotlib
