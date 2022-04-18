@@ -2,18 +2,15 @@ FROM starlabio/centos-base:3 AS main
 
 LABEL maintainer="Star Lab <info@starlab.io>"
 
-# update certificates
-RUN yum -y update ca-certificates nss && \
+# Due to CentOS deprecation, change base URL to Rackspace mirror
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Base* && \
+    sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=https://mirror.rackspace.com/CentOS/7.9.2009|g' /etc/yum.repos.d/CentOS-Base* && \
+    yum -y update && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 # Install EPEL
-# Install yum-plugin-ovl to work around issue with a bad
-# rpmdb checksum
-RUN yum install -y epel-release yum-plugin-ovl
-
-# Newer curl for systemd
-COPY yum.repos.d/city-fan.repo /etc/yum.repos.d/
+RUN yum install -y epel-release 
 
 RUN yum update -y && yum install -y \
     # Install xxd and attr utilities
@@ -56,8 +53,6 @@ RUN yum update -y && yum install -y \
     gcc-aarch64-linux-gnu libgcc.i686 libgcc-devel.i686 \
     # Install yum dependencies for ronn
     ruby-devel \
-    # Various systemd build requirements
-    gperf libcap-devel libmount-devel \
     # Add rpmsign and createrepo for building the Yum release repos
     gpg createrepo rpmsign \
     libxslt-devel libxml2-devel libyaml-devel \
@@ -89,17 +84,16 @@ RUN yum update -y && yum install -y \
     clang-analyzer \
     # parallel
     parallel \
+    # expect
+    expect \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN yum install -y centos-release-scl
-RUN yum install -y devtoolset-8-gcc
-
 # Force newer version of GIT
 RUN yum erase -y git && \
     yum update -y && yum install -y \
-    https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm && \
+    https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm && \
     yum install -y git && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
@@ -110,24 +104,25 @@ ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:
 
 # install rustup in a globally accessible location
 RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
-    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.46.0-x86_64-unknown-linux-gnu && \
+    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.56.0-x86_64-unknown-linux-gnu && \
     rm rustup-install.sh && \
                             \
     # Install rustfmt / cargo fmt for testing
-    rustup component add rustfmt
+    rustup component add rustfmt && \
+    rustup component add clippy-preview
 
 # install the cargo license checker
 RUN cargo install cargo-license
 
 # Build and install python 2.7 and pip pinned to less than v21
 RUN wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz && \
-    tar xfJ Python-2.7.18.tar.xz
-WORKDIR Python-2.7.18
-RUN ./configure --prefix=/usr/local && make && make altinstall && \
+    tar xfJ Python-2.7.18.tar.xz && \
+    cd Python-2.7.18 && \
+    ./configure --prefix=/usr/local && make && make altinstall && \
     ln -s /usr/local/bin/python2.7 /usr/local/bin/python && \
-    ln -s /usr/local/bin/python2.7 /usr/local/bin/python2
-WORKDIR /
-RUN rm -rf /Python-2.7.18*
+    ln -s /usr/local/bin/python2.7 /usr/local/bin/python2 && \
+    cd - && \
+    rm -rf /Python-2.7.18*
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python2 ./get-pip.py && \
     python2 -m pip install --upgrade "pip < 21.0" && \
