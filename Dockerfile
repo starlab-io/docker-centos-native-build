@@ -5,7 +5,7 @@ LABEL maintainer="Star Lab <info@starlab.io>"
 RUN mkdir /source
 
 # Install EPEL
-RUN yum update -y && yum install -y \
+RUN yum update --releasever=8.5 -y && yum install -y \
     https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/* && \
@@ -13,7 +13,7 @@ RUN yum update -y && yum install -y \
     dnf config-manager --set-enabled powertools
 
 # Install basic build dependencies
-RUN yum update -y && yum install -y \
+RUN yum update --releasever=8.5 -y && yum install -y \
     git kernel-devel wget openssl openssl-devel python3 python3-devel python3-docutils \
     audit-libs-devel bc binutils-devel dwarves elfutils-devel \
     java-devel kabi-dw libbabeltrace-devel libbpf-devel libcap-devel \
@@ -23,7 +23,7 @@ RUN yum update -y && yum install -y \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
-RUN yum update -y && yum install -y \
+RUN yum update --releasever=8.5 -y && yum install -y \
     # Install xxd and attr utilities
     # Install CONFIG_STACK_VALIDATION dependencies
     # Install which required to build RedHawk 6 OpenOnLoad subsystem
