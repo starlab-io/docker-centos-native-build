@@ -1,8 +1,15 @@
-FROM almalinux:8.5
+
+# RHEL/Alma release version
+ARG releasever=8.5
+FROM almalinux:$releasever
 
 LABEL maintainer="Star Lab <info@starlab.io>"
 
 RUN mkdir /source
+
+# Pin release version
+ARG releasever
+RUN echo $releasever > /etc/dnf/vars/releasever
 
 # Install EPEL
 RUN yum update -y && yum install -y \
