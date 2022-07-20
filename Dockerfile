@@ -1,6 +1,6 @@
 
 # RHEL/Alma release version
-ARG releasever=8.5
+ARG releasever=8.6
 FROM almalinux:$releasever
 
 LABEL maintainer="Star Lab <info@starlab.io>"
