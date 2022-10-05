@@ -112,7 +112,7 @@ RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
     rustup component add clippy-preview
 
 # install the cargo license checker
-RUN cargo install cargo-license
+RUN cargo install cargo-license --version 0.4.2
 
 # Build and install python 2.7 and pip pinned to less than v21
 RUN wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz && \
