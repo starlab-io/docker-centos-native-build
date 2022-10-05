@@ -4,13 +4,13 @@ LABEL maintainer="Star Lab <info@starlab.io>"
 
 # Due to CentOS deprecation, change base URL to Rackspace mirror
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Base* && \
-    sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=https://mirror.rackspace.com/CentOS/7.9.2009|g' /etc/yum.repos.d/CentOS-Base* && \
+    sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever|baseurl=https://vault.centos.org/7.7.1908|g' /etc/yum.repos.d/CentOS-Base* && \
     yum -y update && \
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
 
 # Install EPEL
-RUN yum install -y epel-release 
+RUN yum install -y epel-release
 
 RUN yum update -y && yum install -y \
     # Install xxd and attr utilities
