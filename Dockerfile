@@ -86,6 +86,8 @@ RUN yum update -y && yum install -y \
     parallel \
     # expect
     expect \
+    # perl-IPC-Cmd for OpenSSL 3.0.x
+    perl-IPC-Cmd \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
