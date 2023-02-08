@@ -88,6 +88,8 @@ RUN yum update -y && yum install -y \
     expect \
     # perl-IPC-Cmd for OpenSSL 3.0.x
     perl-IPC-Cmd \
+    # libnl for Netlink socket dev
+    libnl3-cli libnl3-devel libnl3 \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
