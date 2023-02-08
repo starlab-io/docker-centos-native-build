@@ -173,5 +173,7 @@ session    sufficient    pam_permit.so\n\
 ENV LC_ALL=en_US.utf-8
 ENV LANG=en_US.utf-8
 
+VOLUME ["/source"]
+WORKDIR /source
 ENTRYPOINT ["/usr/local/bin/startup_script"]
 CMD ["/bin/bash", "-l"]
