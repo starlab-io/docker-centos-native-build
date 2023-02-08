@@ -149,6 +149,11 @@ RUN wget -nv https://github.com/koalaman/shellcheck/releases/download/${SHELLCHE
     rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
     rm -r shellcheck-${SHELLCHECK_VER}
 
+# Install binary for reformating Gherkin feature files.
+RUN wget https://github.com/antham/ghokin/releases/download/v1.6.1/ghokin_linux_amd64 && \
+    chmod +x ghokin_linux_amd64 && \
+    mv ghokin_linux_amd64 /usr/bin/ghokin
+
 ARG VER=1
 ARG ZIP_FILE=add-user-to-sudoers.zip
 RUN wget -nv "https://github.com/starlab-io/add-user-to-sudoers/releases/download/${VER}/${ZIP_FILE}" && \
