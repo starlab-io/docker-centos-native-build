@@ -149,8 +149,6 @@ RUN wget -nv https://github.com/koalaman/shellcheck/releases/download/${SHELLCHE
     rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
     rm -r shellcheck-${SHELLCHECK_VER}
 
-COPY vimrc /tmp/vimrc
-
 ARG VER=1
 ARG ZIP_FILE=add-user-to-sudoers.zip
 RUN wget -nv "https://github.com/starlab-io/add-user-to-sudoers/releases/download/${VER}/${ZIP_FILE}" && \
@@ -161,9 +159,6 @@ RUN wget -nv "https://github.com/starlab-io/add-user-to-sudoers/releases/downloa
     mv startup_script /usr/local/bin/ && \
     chmod 4755 /usr/local/bin/add_user_to_sudoers && \
     chmod +x /usr/local/bin/startup_script && \
-    # install some nice defaults for vim and bash
-    cat /tmp/vimrc >> /etc/vimrc && \
-    rm /tmp/vimrc && \
     # Let regular users be able to use sudo
     echo $'auth       sufficient    pam_permit.so\n\
 account    sufficient    pam_permit.so\n\
