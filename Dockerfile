@@ -149,26 +149,6 @@ RUN wget -nv https://github.com/koalaman/shellcheck/releases/download/${SHELLCHE
     rm shellcheck-${SHELLCHECK_VER}.linux.x86_64.tar.xz && \
     rm -r shellcheck-${SHELLCHECK_VER}
 
-###
-### BEGIN intermediate multi-stage build layers
-###
-
-FROM main AS binutils
-COPY build_binutils /tmp/
-RUN /tmp/build_binutils
-
-###
-### END intermediate multi-stage build layers
-###
-
-FROM main
-# Not ideal having to copy over the RPM, since it will still stick around
-COPY --from=binutils /tmp/binutils_install /tmp/binutils/
-RUN  if ! rpm -U --force /tmp/binutils/binut*.rpm; then \
-    echo "Failed to install binutils RPM" >&2; \
-    exit 1; \
-    fi && rm -rf /tmp/binutils/
-
 COPY vimrc /tmp/vimrc
 COPY dracut.conf /etc/dracut.conf
 
