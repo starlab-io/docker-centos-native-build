@@ -150,7 +150,6 @@ RUN wget -nv https://github.com/koalaman/shellcheck/releases/download/${SHELLCHE
     rm -r shellcheck-${SHELLCHECK_VER}
 
 COPY vimrc /tmp/vimrc
-COPY dracut.conf /etc/dracut.conf
 
 ARG VER=1
 ARG ZIP_FILE=add-user-to-sudoers.zip
