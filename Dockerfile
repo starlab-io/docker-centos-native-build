@@ -108,15 +108,19 @@ ENV PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:
 
 # install rustup in a globally accessible location
 RUN curl https://sh.rustup.rs -sSf > rustup-install.sh && \
-    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.56.1-x86_64-unknown-linux-gnu && \
+    umask 020 && sh ./rustup-install.sh -y --default-toolchain 1.66.0-x86_64-unknown-linux-gnu && \
     rm rustup-install.sh && \
                             \
     # Install rustfmt / cargo fmt for testing
     rustup component add rustfmt && \
-    rustup component add clippy-preview
+    rustup component add clippy-preview && \
+    cargo install ripgrep --locked && \
+    # We need nightly to be able to use cargo udeps. Installing it like this does not make it default
+    rustup install nightly && \
+    cargo install cargo-udeps --locked
 
 # install the cargo license checker
-RUN cargo install cargo-license --version 0.4.2
+RUN cargo install cargo-license --locked
 
 # Build and install python 2.7 and pip pinned to less than v21
 RUN wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tar.xz && \
