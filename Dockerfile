@@ -90,6 +90,8 @@ RUN yum update -y && yum install -y \
     perl-IPC-Cmd \
     # libnl for Netlink socket dev
     libnl3-cli libnl3-devel libnl3 \
+    # add pcsc-lite-devel for yubikey dev
+    pcsc-lite-devel \
     # Cleanup
     yum clean all && \
     rm -rf /var/cache/yum/* /tmp/* /var/tmp/*
